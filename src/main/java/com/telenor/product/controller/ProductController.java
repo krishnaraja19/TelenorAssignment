@@ -47,22 +47,22 @@ public class ProductController {
 	@SuppressWarnings("null")
 	@RequestMapping(value = "product", method = RequestMethod.GET)
 	public ResponseEntity<Map<String, List<Product>>> getProducts(
-			@RequestParam(value = "type") Optional<String> Type,
-			@RequestParam(value = "properties") Optional<String> Properties,
-			@RequestParam(value = "min_price") Optional<String> Min_Price,
-			@RequestParam(value = "max_price") Optional<String> Max_Price,
-			@RequestParam(value = "store_address") Optional<String> storeAddress) {
+			@RequestParam(value = "type") Optional<String> productType,
+			@RequestParam(value = "properties") Optional<String> productProperties,
+			@RequestParam(value = "min_price") Optional<String> productMinPrice,
+			@RequestParam(value = "max_price") Optional<String> productMaxPrice,
+			@RequestParam(value = "store_address") Optional<String> productStoreAddress) {
 		
 		Map<String, List<Product>> result = new HashMap<String, List<Product>>();
 		List<Product> products = null;
 		
 		// Getting Input validation result
 		boolean isValid = inputValid.multipleProductValueException(
-				Type.isPresent() ? Type.get() : null,
-				Properties.isPresent() ? Properties.get() : null,
-				Min_Price.isPresent() ? Min_Price.get() : null,
-				Max_Price.isPresent() ? Max_Price.get() : null,
-				storeAddress.isPresent() ? storeAddress.get() : null);
+								productType.isPresent() ? productType.get() : null,
+								productProperties.isPresent() ? productProperties.get() : null,
+								productMinPrice.isPresent() ? productMinPrice.get() : null,
+								productMaxPrice.isPresent() ? productMaxPrice.get() : null,
+								productStoreAddress.isPresent() ? productStoreAddress.get() : null);
 		
 		//If validation fails throw new Exception
 		if(!isValid) {
@@ -72,10 +72,10 @@ public class ProductController {
 		
 		//Calling repository to get the required data
 		LOGGER.info("Getting the data from Product repository");
-		products = productServiceImpl.findByMultipleParameter(Type, Properties, 
-				Min_Price.isPresent() ? Optional.of(Double.parseDouble(Min_Price.get())) : Optional.empty(),
-				Max_Price.isPresent() ? Optional.of(Double.parseDouble(Max_Price.get())) : Optional.empty(), 
-				storeAddress);
+		products = productServiceImpl.findByMultipleParameter(productType, productProperties, 
+				productMinPrice.isPresent() ? Optional.of(Double.parseDouble(productMinPrice.get())) : Optional.empty(),
+				productMaxPrice.isPresent() ? Optional.of(Double.parseDouble(productMaxPrice.get())) : Optional.empty(), 
+				productStoreAddress);
 		
 		//If data is not available throw resource not found exception
 		if (products.isEmpty()) {
